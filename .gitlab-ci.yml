@@ -1,0 +1,43 @@
+stages:
+  - build
+  - tests
+  - deploy
+
+build:
+  stage: build
+  image: node:12
+  script:
+    - npm install
+    - npm install -g @angular/cli
+    - ng build
+  cache:
+    paths:
+      - ./node_modules
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - dist/my-app
+  only:
+    - master
+
+tests:
+  stage: tests
+  image: circleci/node:12-browsers
+  script:
+    - sudo npm install
+    - sudo npm install -g @angular/cli
+    - ng test --no-watch --no-progress --browsers=ChromeHeadlessCI
+  cache:
+    paths:
+      - ./node_modules
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  image: ruby:2.6
+  script:
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_KEY --skip_cleanup=true
+  only:
+    - master
