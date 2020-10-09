@@ -60,9 +60,7 @@ Route::prefix('/user')->group(function (){
 });
 //////////////////
 
-// test 2
 // User
-Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('user.login');
 Route::get('/logout', 'UserController@logout')->name('user.logout');
